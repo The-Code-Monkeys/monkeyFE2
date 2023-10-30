@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+        <meta charset="utf-8" />
+
+        <title>Demo Chat</title>
+
+        <link href="bootstrap.css" rel="stylesheet">
+
+	<style>
+		body {
+			padding:20px;
+		}
+		#console {
+			height: 400px;
+			overflow: auto;
+		}
+		.username-msg {color:orange;}
+		.connect-msg {color:green;}
+		.disconnect-msg {color:red;}
+		.send-msg {color:#888}
+	</style>
+
+
+	<script src="js/socket.io/socket.io.js"></script>
+        <script src="js/moment.min.js"></script>
+        <script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
+
+	<script>
+
+                var userName = 'user' + Math.floor((Math.random()*1000)+1);
+
+		var socket =  io.connect('http://localhost:9092');
+
+		socket.on('connect', function() {
+			output('<span class="connect-msg">Client has connected to the server!</span>');
+		});
+
+		socket.on('senttodata', function(data) {
+			output('<span class="username-msg">' + data.userName + ':</span> ' + data.message);
+		});
+
+		socket.on('disconnect', function() {
+			output('<span class="disconnect-msg">The client has disconnected!</span>');
+		});
+
+                function sendDisconnect() {
+                        socket.disconnect();
+                }
+
+		function sendMessage(dir) {
+			switch(dir){
+                    case 0:
+                        socket.emit("up");
+						console.log("up");
+                        break;
+                    case 1:
+                        socket.emit("left");
+						console.log("left");
+                        break;
+                    case 2:
+                        socket.emit("right");
+						console.log("right");
+                        break;
+                    case 3:
+						
+                        socket.emit("down");
+						console.log("down");
+                        break;
+                }
+		}
+	</script>
+</head>
+
+<body>
+
+	<h1>Netty-socketio Demo Chat</h1>
+
+	<br/>
+
+	<div id="console" class="well">
+		<button type="button" onClick="sendMessage(0)" class="btn" id="send">Up</button>
+		<button type="button" onClick="sendMessage(1)" class="btn">Left</button>
+		<button type="button" onClick="sendMessage(2)" class="btn">Right</button>
+		<button type="button" onClick="sendMessage(3)" class="btn">Down</button>
+	</div>
+
+
+
+
+</body>
+
+</html>
