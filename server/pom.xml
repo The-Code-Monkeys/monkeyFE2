@@ -9,7 +9,7 @@
  <inceptionYear>2012</inceptionYear>
 
  <properties>
-     <main.class>com.corundumstudio.socketio.demo.ChatLauncher</main.class>
+     <main.class>com.corundumstudio.socketio.demo.MotorSocketSetup</main.class>
      <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
  </properties>
 
@@ -23,11 +23,11 @@
 
  <developers>
      <developer>
-         <id>mrniko</id>
-         <name>Nikita Koksharov</name>
+         <id>nVarap</id>
+         <name>Varaprasad Nibhanupudi, Emaad Mir, et al.</name>
          <roles>
-             <role>Architect</role>
-             <role>Developer</role>
+             <role>Student</role>
+             <role>Student</role>
          </roles>
          <timezone>+4</timezone>
      </developer>
@@ -68,8 +68,8 @@
         <artifactId>maven-compiler-plugin</artifactId>
         <version>3.2</version>
         <configuration>
-            <source>1.6</source>
-            <target>1.6</target>
+            <source>1.8</source>
+            <target>1.8</target>
             <encoding>UTF-8</encoding>
         </configuration>
       </plugin>
