@@ -29,7 +29,7 @@
 
 	<script>
 
-                var userName = 'user' + Math.floor((Math.random()*1000)+1);
+        var userName = 'user' + Math.floor((Math.random()*1000)+1);
 
 		var socket =  io.connect('http://localhost:9092');
 
@@ -45,9 +45,39 @@
 			output('<span class="disconnect-msg">The client has disconnected!</span>');
 		});
 
+	/*	socket.on('queue', function(queue) { If I remember correctly we already have this, but just in case we decide to use it
+			const queueList = document.getElementById('userQueue');
+			queueList.innerHTML = 'Users in Queue: ' + queue.map(user => user.id)
+
+		});*/
+
+		var uid; 
+
+		function checkUser(){
+			const uid = document.getElementById('userIdCheck').value; // creates a unique id number for each user
+			socket.emit('checkUser', uid); // sends a message to all already connected clients
+		}
+
+		socket.on('checkExist', function(exists){ // this function is here to check if a user with a specified id number exists and is in the queue
+			alert("User with ID " + uid + " exists"); // what is shown in the output if the user exists
+
+		});
+
+
+		socket.emit('newUser', userName); // send a message to all connected clients when a new user has joined the queue
+
                 function sendDisconnect() {
                         socket.disconnect();
                 }
+
+
+				function output(message) {
+					var consoleDiv = document.getElementById('console');
+					var para = document.createElement('p');
+					para.innerHTML = message;
+					consoleDiv.appendChild(para);
+					consoleDiv.scrollTop = consoleDiv.scrollHeight; // Scroll to the bottom
+				}
 
 		function sendMessage(dir) {
 			switch(dir){
@@ -70,12 +100,15 @@
                         break;
                 }
 		}
+
+
+
 	</script>
 </head>
 
 <body>
 
-	<h1>Netty-socketio Demo Chat</h1>
+	<h1>Robot Controller Queue</h1>
 
 	<br/>
 
@@ -84,6 +117,11 @@
 		<button type="button" onClick="sendMessage(1)" class="btn">Left</button>
 		<button type="button" onClick="sendMessage(2)" class="btn">Right</button>
 		<button type="button" onClick="sendMessage(3)" class="btn">Down</button>
+	</div>
+
+	<div>
+		<input type="text" id="userIdCheck" placeholder="Enter user ID" /> 
+		<button onclick="checkUser()">Check User</button>
 	</div>
 
 
