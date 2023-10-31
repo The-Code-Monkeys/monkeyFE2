@@ -23,7 +23,7 @@
 	</style>
 
 
-	<script src="js/socket.io/socket.io.js"></script>
+		<script src="js/socket.io/socket.io.js"></script>
         <script src="js/moment.min.js"></script>
         <script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
 
@@ -45,6 +45,10 @@
 			output('<span class="disconnect-msg">The client has disconnected!</span>');
 		});
 
+		socket.on('newUserJoined', function(message) {
+        	output('<span class="connect-msg">' + message + '</span>');
+    });
+
 	/*	socket.on('queue', function(queue) { If I remember correctly we already have this, but just in case we decide to use it
 			const queueList = document.getElementById('userQueue');
 			queueList.innerHTML = 'Users in Queue: ' + queue.map(user => user.id)
@@ -54,12 +58,20 @@
 		var uid; 
 
 		function checkUser(){
-			const uid = document.getElementById('userIdCheck').value; // creates a unique id number for each user
+			var uid = document.getElementById('userIdCheck').value; // creates a unique id number for each user
 			socket.emit('checkUser', uid); // sends a message to all already connected clients
+			var bool = true;
+			if (!userQueue.contains(uid)) {
+				bool = false;
+			}
+			var message = bool ? "User with ID " + userId + " exists." : "User with ID " + userId + " does not exist.";
+			output('<span class="username-msg">' + message + '</span>');  // what is shown in the output if the user exists
 		}
 
 		socket.on('checkExist', function(exists){ // this function is here to check if a user with a specified id number exists and is in the queue
-			alert("User with ID " + uid + " exists"); // what is shown in the output if the user exists
+			var userId = document.getElementById('userIdCheck').value;
+			var message = exists ? "User with ID " + userId + " exists." : "User with ID " + userId + " does not exist.";
+			output('<span class="username-msg">' + message + '</span>');  // what is shown in the output if the user exists
 
 		});
 
@@ -98,8 +110,12 @@
                         socket.emit("down");
 						console.log("down");
                         break;
+
+					case 4:
                 }
 		}
+
+
 
 
 
