@@ -1,88 +1,56 @@
 <!DOCTYPE html>
 <html>
 <head>
-
-        <meta charset="utf-8" />
-
-        <title>Demo Chat</title>
-
-        <link href="bootstrap.css" rel="stylesheet">
-
+    <meta charset="utf-8" />
+    <title>Demo Chat</title>
+    <link href="bootstrap.css" rel="stylesheet">
     <style>
         body {
-            padding:20px;
+            padding: 20px;
         }
         #console {
             height: 400px;
             overflow: auto;
         }
-        .username-msg {color:orange;}
-        .connect-msg {color:green;}
-        .disconnect-msg {color:red;}
-        .send-msg {color:#888}
+        .username-msg {color: orange;}
+        .connect-msg {color: green;}
+        .disconnect-msg {color: red;}
+        .send-msg {color: #888}
     </style>
-
-
-        <script src="js/socket.io/socket.io.js"></script>
-        <script src="js/moment.min.js"></script>
-        <script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
-
+    <script src="js/socket.io/socket.io.js"></script>
+    <script src="js/moment.min.js"></script>
+    <script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
     <script>
-
-        var userName = 'user' + Math.floor((Math.random()*1000)+1);
-
-        var socket =  io.connect('http://localhost:9092');
-
-        socket.on('connect', function() {
+        var userName = 'user' + Math.floor((Math.random() * 1000) + 1);
+        var socket = io.connect('http://localhost:9092');
+        var moving = false; // Variable to track movement state
+        socket.on('connect', function () {
             output('<span class="connect-msg">Client has connected to the server!</span>');
         });
-
-        socket.on('senttodata', function(data) {
+        socket.on('senttodata', function (data) {
             output('<span class="username-msg">' + data.userName + ':</span> ' + data.message);
         });
-
-        socket.on('disconnect', function() {
+        socket.on('disconnect', function () {
             output('<span class="disconnect-msg">The client has disconnected!</span>');
         });
-
-        socket.on('newUserJoined', function(message) {
-        	output('<span class="connect-msg">' + message + '</span>');
-    });
-
-    /*	socket.on('queue', function(queue) { If I remember correctly we already have this, but just in case we decide to use it
-            const queueList = document.getElementById('userQueue');
-            queueList.innerHTML = 'Users in Queue: ' + queue.map(user => user.id)
-
-        });*/
-
-        var uid; 
-
-        function checkUser(){
-            var uid = document.getElementById('userIdCheck').value; // creates a unique id number for each user
-            socket.emit('checkUser', uid); // sends a message to all already connected clients
-            var bool = true;
-            if (!userQueue.contains(uid)) {
-                bool = false;
-            }
-            var message = bool ? "User with ID " + userId + " exists." : "User with ID " + userId + " does not exist.";
-            output('<span class="username-msg">' + message + '</span>');  // what is shown in the output if the user exists
+        socket.on('newUserJoined', function (message) {
+            output('<span class="connect-msg">' + message + '</span>');
+        });
+        var uid;
+        function checkUser() {
+            uid = document.getElementById('userIdCheck').value;
+            socket.emit('checkUser', uid);
         }
-
-        socket.on('checkExist', function(exists){ // this function is here to check if a user with a specified id number exists and is in the queue
+        socket.on('checkExist', function (exists) {
             var userId = document.getElementById('userIdCheck').value;
             var message = exists ? "User with ID " + userId + " exists." : "User with ID " + userId + " does not exist.";
-            output('<span class="username-msg">' + message + '</span>');  // what is shown in the output if the user exists
-
+            output('<span class="username-msg">' + message + '</span>');
         });
-
-
-        socket.emit('newUser', userName); // send a message to all connected clients when a new user has joined the queue
-
-        var intervalId; // variable to hold the interval ID
-
+        socket.emit('newUser', userName);
+        var intervalId;
         function startSendingMessage(dir) {
-            intervalId = setInterval(function() {
-                switch(dir){
+            intervalId = setInterval(function () {
+                switch (dir) {
                     case 0:
                         socket.emit("up");
                         console.log("up");
@@ -100,53 +68,44 @@
                         console.log("down");
                         break;
                 }
-            }, 100); // emit the event every 100 milliseconds
+            }, 100);
         }
-
         function stopSendingMessage() {
-            clearInterval(intervalId); // stop emitting the event
+            clearInterval(intervalId);
         }
-
+        function sendMessage(dir) {
+            if (!moving) {
+                startSendingMessage(dir);
+                moving = true;
+            }
+        }
+        function stopMessage() {
+            if (moving) {
+                stopSendingMessage();
+                moving = false;
+            }
+        }
         function output(message) {
             var consoleDiv = document.getElementById('console');
             var para = document.createElement('p');
             para.innerHTML = message;
             consoleDiv.appendChild(para);
-            consoleDiv.scrollTop = consoleDiv.scrollHeight; // Scroll to the bottom
+            consoleDiv.scrollTop = consoleDiv.scrollHeight;
         }
-
-        function sendMessage(dir) {
-            startSendingMessage(dir);
-        }
-
-        function stopMessage() {
-            stopSendingMessage();
-        }
-
     </script>
 </head>
-
 <body>
-
     <h1>Robot Controller Queue</h1>
-
     <br/>
-
     <div id="console" class="well">
-        <button type="button" onMouseDown="sendMessage(0)" onMouseUp="stopMessage()" class="btn" id="send">Up</button>
-        <button type="button" onMouseDown="sendMessage(1)" onMouseUp="stopMessage()" class="btn">Left</button>
-        <button type="button" onMouseDown="sendMessage(2)" onMouseUp="stopMessage()" class="btn">Right</button>
-        <button type="button" onMouseDown="sendMessage(3)" onMouseUp="stopMessage()" class="btn">Down</button>
+        <button type="button" onmousedown="sendMessage(0)" onmouseup="stopMessage()" class="btn" id="send">Up</button>
+        <button type="button" onmousedown="sendMessage(1)" onmouseup="stopMessage()" class="btn">Left</button>
+        <button type="button" onmousedown="sendMessage(2)" onmouseup="stopMessage()" class="btn">Right</button>
+        <button type="button" onmousedown="sendMessage(3)" onmouseup="stopMessage()" class="btn">Down</button>
     </div>
-
     <div>
-        <input type="text" id="userIdCheck" placeholder="Enter user ID" /> 
+        <input type="text" id="userIdCheck" placeholder="Enter user ID" />
         <button onclick="checkUser()">Check User</button>
     </div>
-
-
-
-
 </body>
-
 </html>
