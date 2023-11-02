@@ -47,7 +47,7 @@ public class MotorSocketSetup {
             public void onData(final SocketIOClient client, String data, final AckRequest ackRequest) {
                 // Run code to go up
                 System.out.println("going up");
-                MotorFunctions.up();
+        
             }
         });
 
@@ -56,7 +56,6 @@ public class MotorSocketSetup {
             public void onData(final SocketIOClient client, String data, final AckRequest ackRequest) {
                 // run code to go left
                 System.out.println("going left");
-                MotorFunctions.left();
             }
         });
 
@@ -65,7 +64,7 @@ public class MotorSocketSetup {
             public void onData(final SocketIOClient client, String data, final AckRequest ackRequest) {
                 // run code to go right
                 System.out.println("going right");
-                MotorFunctions.right();
+
             }
         });
 
@@ -75,7 +74,7 @@ public class MotorSocketSetup {
             public void onData(final SocketIOClient client, String data, final AckRequest ackRequest) {
                 // run code to go down
                 System.out.println("going down");
-                MotorFunctions.down();
+    
             }
         });
 
