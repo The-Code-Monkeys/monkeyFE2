@@ -36,52 +36,9 @@ public class MotorSocketSetup {
                     userQueue.add(userId);
                     server.getBroadcastOperations().sendEvent("newUserJoined", "New user joined with ID: " + userId);
                     System.out.println("New user joined with ID: " + userId);
-                    
-                    // Add a DisconnectListener to release the semaphore when the client disconnects
-                    client.addDisconnectListener(new DisconnectListener() {
-                        @Override
-                        public void onDisconnect(SocketIOClient client) {
-                            String userId = client.getSessionId().toString();
-                            userQueue.remove(userId);
-                            connectionSemaphore.release(); // Release the semaphore permit
-                            System.out.println("User disconnected with ID: " + userId);
-                        }
-                    });
                 } else {
                     client.disconnect();
                 }
-            }
-        });
-
-        server.addEventListener("up", String.class, new DataListener<String>() {
-            @Override
-            public void onData(final SocketIOClient client, String data, final AckRequest ackRequest) {
-                System.out.println("going up");
-                MotorFunctions.up();
-            }
-        });
-
-        server.addEventListener("left", String.class, new DataListener<String>() {
-            @Override
-            public onData(final SocketIOClient client, String data, final AckRequest ackRequest) {
-                System.out.println("going left");
-                MotorFunctions.left();
-            }
-        });
-
-        server.addEventListener("right", String.class, new DataListener<String>() {
-            @Override
-            public onData(final SocketIOClient client, String data, final AckRequest ackRequest) {
-                System.out.println("going right");
-                MotorFunctions.right();
-            }
-        });
-
-        server.addEventListener("down", String.class, new DataListener<String>() {
-            @Override
-            public onData(final SocketIOClient client, String data, final AckRequest ackRequest) {
-                System.out.println("going down");
-                MotorFunctions.down();
             }
         });
 
