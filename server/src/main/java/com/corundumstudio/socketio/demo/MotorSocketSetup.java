@@ -42,6 +42,16 @@ public class MotorSocketSetup {
             }
         });
 
+        server.addDisconnectListener(new DisconnectListener() {
+            @Override
+            public void onDisconnect(SocketIOClient client) {
+                String userId = client.getSessionId().toString();
+                userQueue.remove(userId);
+                connectionSemaphore.release(); // Release the semaphore permit
+                System.out.println("User disconnected with ID: " + userId);
+            }
+        });
+
         server.addEventListener("up", String.class, new DataListener<String>() {
             @Override
             public void onData(final SocketIOClient client, String data, final AckRequest ackRequest) {
@@ -52,7 +62,7 @@ public class MotorSocketSetup {
 
         server.addEventListener("left", String.class, new DataListener<String>() {
             @Override
-            public void onData(final SocketIOClient client, String data, final AckRequest ackRequest) {
+            public onData(final SocketIOClient client, String data, final AckRequest ackRequest) {
                 System.out.println("going left");
                 MotorFunctions.left();
             }
@@ -60,7 +70,7 @@ public class MotorSocketSetup {
 
         server.addEventListener("right", String.class, new DataListener<String>() {
             @Override
-            public void onData(final SocketIOClient client, String data, final AckRequest ackRequest) {
+            public onData(final SocketIOClient client, String data, final AckRequest ackRequest) {
                 System.out.println("going right");
                 MotorFunctions.right();
             }
@@ -68,7 +78,7 @@ public class MotorSocketSetup {
 
         server.addEventListener("down", String.class, new DataListener<String>() {
             @Override
-            public void onData(final SocketIOClient client, String data, final AckRequest ackRequest) {
+            public onData(final SocketIOClient client, String data, final AckRequest ackRequest) {
                 System.out.println("going down");
                 MotorFunctions.down();
             }
