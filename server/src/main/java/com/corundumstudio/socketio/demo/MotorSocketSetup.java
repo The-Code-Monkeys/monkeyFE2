@@ -19,9 +19,9 @@ public class MotorSocketSetup {
 
         final SocketIOServer server = new SocketIOServer(config);
 
-        server.addListeners(new DataListener<String>("checkUser") {
+        server.addEventListener("checkUser", String.class, new DataListener<String>() {
             @Override
-            protected void onData(SocketIOClient client, String userId, AckRequest ackRequest) {
+            public void onData(final SocketIOClient client, String userId, final AckRequest ackRequest) {
                 boolean userExists = userQueue.contains(userId);
                 client.sendEvent("checkExist", userExists);
                 System.out.printf("User with id %s exists " + userId);
@@ -42,33 +42,33 @@ public class MotorSocketSetup {
             }
         });
 
-        server.addListeners(new DataListener<String>("up") {
+        server.addEventListener("up", String.class, new DataListener<String>() {
             @Override
-            protected void onData(SocketIOClient client, String data, AckRequest ackRequest) {
+            public void onData(final SocketIOClient client, String data, final AckRequest ackRequest) {
                 System.out.println("going up");
                 MotorFunctions.up();
             }
         });
 
-        server.addListeners(new DataListener<String>("left") {
+        server.addEventListener("left", String.class, new DataListener<String>() {
             @Override
-            protected void onData(SocketIOClient client, String data, AckRequest ackRequest) {
+            public void onData(final SocketIOClient client, String data, final AckRequest ackRequest) {
                 System.out.println("going left");
                 MotorFunctions.left();
             }
         });
 
-        server.addListeners(new DataListener<String>("right") {
+        server.addEventListener("right", String.class, new DataListener<String>() {
             @Override
-            protected void onData(SocketIOClient client, String data, AckRequest ackRequest) {
+            public void onData(final SocketIOClient client, String data, final AckRequest ackRequest) {
                 System.out.println("going right");
                 MotorFunctions.right();
             }
         });
 
-        server.addListeners(new DataListener<String>("down") {
+        server.addEventListener("down", String.class, new DataListener<String>() {
             @Override
-            protected void onData(SocketIOClient client, String data, AckRequest ackRequest) {
+            public void onData(final SocketIOClient client, String data, final AckRequest ackRequest) {
                 System.out.println("going down");
                 MotorFunctions.down();
             }
