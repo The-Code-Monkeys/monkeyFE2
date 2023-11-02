@@ -1,5 +1,4 @@
 package com.corundumstudio.socketio.demo;
-
 import com.corundumstudio.socketio.listener.*;
 import java.util.HashSet;
 import java.util.Set;
@@ -89,22 +88,4 @@ public class MotorSocketSetup {
         server.stop();
     }
 
-    // Placeholder for motor control functions (replace with actual implementation)
-    public static class MotorFunctions {
-        public static void up() {
-            // Implement the logic to move the motors up
-        }
-
-        public static void left() {
-            // Implement the logic to move the motors left
-        }
-
-        public static void right() {
-            // Implement the logic to move the motors right
-        }
-
-        public static void down() {
-            // Implement the logic to move the motors down
-        }
-    }
 }
