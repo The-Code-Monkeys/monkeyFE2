@@ -36,19 +36,20 @@ public class MotorSocketSetup {
                     userQueue.add(userId);
                     server.getBroadcastOperations().sendEvent("newUserJoined", "New user joined with ID: " + userId);
                     System.out.println("New user joined with ID: " + userId);
+                    
+                    // Add a DisconnectListener to release the semaphore when the client disconnects
+                    client.addDisconnectListener(new DisconnectListener() {
+                        @Override
+                        public void onDisconnect(SocketIOClient client) {
+                            String userId = client.getSessionId().toString();
+                            userQueue.remove(userId);
+                            connectionSemaphore.release(); // Release the semaphore permit
+                            System.out.println("User disconnected with ID: " + userId);
+                        }
+                    });
                 } else {
                     client.disconnect();
                 }
-            }
-        });
-
-        server.addDisconnectListener(new DisconnectListener() {
-            @Override
-            public void onDisconnect(SocketIOClient client) {
-                String userId = client.getSessionId().toString();
-                userQueue.remove(userId);
-                connectionSemaphore.release(); // Release the semaphore permit
-                System.out.println("User disconnected with ID: " + userId);
             }
         });
 
