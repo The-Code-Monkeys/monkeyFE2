@@ -42,10 +42,69 @@ public class MotorSocketSetup {
             }
         });
 
+        server.addEventListener("up", String.class, new DataListener<String>() {
+            @Override
+            public void onData(final SocketIOClient client, String data, final AckRequest ackRequest) {
+                // Run code to go up
+                System.out.println("going up");
+                // Call a motor control function to move up
+                MotorFunctions.up();
+            }
+        });
+
+        server.addEventListener("left", String.class, new DataListener<String>() {
+            @Override
+            public void onData(final SocketIOClient client, String data, final AckRequest ackRequest) {
+                // Run code to go left
+                System.out.println("going left");
+                // Call a motor control function to move left
+                MotorFunctions.left();
+            }
+        });
+
+        server.addEventListener("right", String.class, new DataListener<String>() {
+            @Override
+            public void onData(final SocketIOClient client, String data, final AckRequest ackRequest) {
+                // Run code to go right
+                System.out.println("going right");
+                // Call a motor control function to move right
+                MotorFunctions.right();
+            }
+        });
+
+        server.addEventListener("down", String.class, new DataListener<String>() {
+            @Override
+            public void onData(final SocketIOClient client, String data, final AckRequest ackRequest) {
+                // Run code to go down
+                System.out.println("going down");
+                // Call a motor control function to move down
+                MotorFunctions.down();
+            }
+        });
+
         server.start();
 
         Thread.sleep(Integer.MAX_VALUE);
 
         server.stop();
+    }
+
+    // Placeholder for motor control functions (replace with actual implementation)
+    public static class MotorFunctions {
+        public static void up() {
+            // Implement the logic to move the motors up
+        }
+
+        public static void left() {
+            // Implement the logic to move the motors left
+        }
+
+        public static void right() {
+            // Implement the logic to move the motors right
+        }
+
+        public static void down() {
+            // Implement the logic to move the motors down
+        }
     }
 }
