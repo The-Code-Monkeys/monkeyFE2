@@ -5,17 +5,21 @@
     <title>Demo Chat</title>
     <link href="bootstrap.css" rel="stylesheet">
     <style>
+        /* CSS styles for the page layout and design */
         body {
             padding: 20px;
         }
+        /* Styling for the message console */
         #console {
             height: 400px;
             overflow: auto;
         }
-        .username-msg {color: orange;}
-        .connect-msg {color: green;}
-        .disconnect-msg {color: red;}
-        .send-msg {color: #888}
+        /* CSS classes for different types of messages */
+        .username-msg {color: orange;}        /* User messages */
+        .connect-msg {color: green;}          /* Connection messages */
+        .disconnect-msg {color: red;}        /* Disconnection messages */
+        .send-msg {color: #888;}              /* Sent messages */
+        /* Styling for directional buttons */
         .btn-circle {
             width: 50px;
             height: 50px;
@@ -27,6 +31,7 @@
             margin: 10px;
             cursor: pointer;
         }
+        /* Styling for specific directional buttons */
         #up-btn {
             background-color: #0078d7;
         }
@@ -39,43 +44,70 @@
         #down-btn {
             background-color: #b91d47;
         }
+        /* Styling for the directional pad container */
         #dpad {
             display: flex;
             justify-content: center;
             align-items: center;
         }
     </style>
-    <script src="js/socket.io/socket.io.js"></script>
-    <script src="js/moment.min.js"></script>
-    <script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
+    <!-- Include JavaScript libraries and scripts -->
+    <script src="js/socket.io/socket.io.js"></script>  <!-- Socket.io library -->
+    <script src="js/moment.min.js"></script>          <!-- Moment.js for time formatting -->
+    <script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>  <!-- jQuery library -->
     <script>
+        // JavaScript code for continuous connections and interactions
+
+        // Generate a random username
         var userName = 'user' + Math.floor((Math.random() * 1000) + 1);
+
+        // Connect to the Socket.io server
         var socket = io.connect('http://localhost:9092');
-        var moving = false; // Variable to track movement state
+
+        // Variable to track movement state
+        var moving = false;
+
+        // Event handler for when the client connects to the server
         socket.on('connect', function () {
             output('<span class="connect-msg">Client has connected to the server!</span>');
         });
+
+        // Event handler for receiving user messages
         socket.on('senttodata', function (data) {
             output('<span class="username-msg">' + data.userName + ':</span> ' + data.message);
         });
+
+        // Event handler for when the client disconnects
         socket.on('disconnect', function () {
             output('<span class="disconnect-msg">The client has disconnected!</span>');
         });
+
+        // Event handler for a new user joining
         socket.on('newUserJoined', function (message) {
             output('<span class="connect-msg">' + message + '</span>');
         });
+
         var uid;
+
+        // Function to check if a user with a given ID exists
         function checkUser() {
             uid = document.getElementById('userIdCheck').value;
             socket.emit('checkUser', uid);
         }
+
+        // Event handler for the result of user existence check
         socket.on('checkExist', function (exists) {
             var userId = document.getElementById('userIdCheck').value;
             var message = exists ? "User with ID " + userId + " exists." : "User with ID " + userId + " does not exist.";
             output('<span class="username-msg">' + message + '</span>');
         });
+
+        // Emit a "newUser" event to inform the server about the new user
         socket.emit('newUser', userName);
+
         var intervalId;
+
+        // Function to start sending movement commands
         function startSendingMessage(dir) {
             intervalId = setInterval(function () {
                 switch (dir) {
@@ -98,21 +130,29 @@
                 }
             }, 100);
         }
+
+        // Function to stop sending movement commands
         function stopSendingMessage() {
             clearInterval(intervalId);
         }
+
+        // Function to handle button press for sending movement commands
         function sendMessage(dir) {
             if (!moving) {
                 startSendingMessage(dir);
                 moving = true;
             }
-        } 
+        }
+
+        // Function to handle button release to stop sending movement commands
         function stopMessage() {
             if (moving) {
                 stopSendingMessage();
                 moving = false;
             }
         }
+
+        // Function to display messages in the console
         function output(message) {
             var consoleDiv = document.getElementById('console');
             var para = document.createElement('p');
@@ -127,6 +167,7 @@
     <br/>
     <div id="console" class="well">
         <div id="dpad">
+            <!-- Directional buttons for controlling the robot -->
             <button type="button" onmousedown="sendMessage(0)" onmouseup="stopMessage()" class="btn-circle" id="up-btn">&#8593;</button>
             <div>
                 <button type="button" onmousedown="sendMessage(1)" onmouseup="stopMessage()" class="btn-circle" id="left-btn">&#8592;</button>
@@ -136,6 +177,7 @@
         </div>
     </div>
     <div>
+        <!-- Input field and button for checking user existence -->
         <input type="text" id="userIdCheck" placeholder="Enter user ID" />
         <button onclick="checkUser()">Check User</button>
     </div>
